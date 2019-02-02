@@ -18,8 +18,10 @@ driver.findElement(By.css('#ember14')).then(()=>{
 });
 
 //szukam guzika do zatwierdzania, guzik nie ma id więc biorę "copy selector" z konsoli
-driver.findElement(By.css('#ember3 > div > div > div > div.col-xs-10.col-xs-offset-1.col-sm-offset-0.col-sm-4.col-md-3 > button')).then(()=>{
-    console.log("Pobrano element buttton");
+driver.findElement(By.css('#ember3 > div > div > div > div.col-xs-10.col-xs-offset-1.col-sm-offset-0.col-sm-4.col-md-3 > button'))
+    .getText()
+    .then((txt)=>{
+    console.log("Pobrano element buttton z napisem "+txt);
 });
 
 
