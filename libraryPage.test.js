@@ -8,7 +8,6 @@ let webdriver = require('selenium-webdriver'),
     expected,
     driver;
 let d = new webdriver.Builder().forBrowser('chrome').build();
-let assert = require('assert');
 const waitUntilTime = 20000;
 const rootURL = 'https://library-app.firebaseapp.com/';
 
@@ -31,38 +30,37 @@ async function getElementByXPath(xpath) {
 }
 
 it('Uruchom driver', () => {
-   return d.then(_d => {
-       driver = _d
-   })
+    return d.then(_d => {
+        driver = _d
+    })
 });
 
 it('Zainicjalizuj kontekst strony', async () => {
     await driver.get(rootURL);
 });
 
-it('Sprawdzamy czy mail jest poprawny', async () =>{
+it('Sprawdzamy czy mail jest poprawny', async () => {
+
+    //element2 to guzik
+    element2 = await getElementByClassName('btn-lg');
     // element to input
     element = await getElementById('ember14');
-    element.sendKeys('usere@mail.pl')
+    element.sendKeys('user@email.pl')
         .then(() => {
             console.log("Poprawnie wpisano dane do inputa")
         })
         .catch(() => {
             console.log("Wystąpił problem z wpisaniem danych do inputa");
         });
-    driver.sleep(1000);
 
-    //element2 to guzik
-    element2 = await getElementByClassName('btn-lg');
-    return element2.getCssValue('opacity').then((result) => {
-         assert(result === '1');
-         console.log("Mail vaild");
-    }).catch(()=> {
-        console.log("Mail invaild");
-    });
+    driver.sleep(3000);
+    actual = await element2.isEnabled()
+        .then((value) => {
+            // console.log(value);
+            return value;
+        });
 
-    // expected = "1";
-    // expect(actual).toEqual(expected);
+    expect(actual).toBeTruthy();
 });
 
 // //pobieram wszystkie elementy navbara do poruszania się po aplikacji.
