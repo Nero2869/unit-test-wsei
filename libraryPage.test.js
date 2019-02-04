@@ -45,20 +45,10 @@ it('Sprawdzamy czy mail jest poprawny', async () => {
     element2 = await getElementByClassName('btn-lg');
     // element to input
     element = await getElementById('ember14');
-    element.sendKeys('user@email.pl')
-        .then(() => {
-            console.log("Poprawnie wpisano dane do inputa")
-        })
-        .catch(() => {
-            console.log("Wystąpił problem z wpisaniem danych do inputa");
-        });
+    await element.sendKeys('user@ail.pl');
 
-    driver.sleep(3000);
-    actual = await element2.isEnabled()
-        .then((value) => {
-            // console.log(value);
-            return value;
-        });
+    // driver.sleep(3000);
+    actual = await element2.isEnabled();
 
     expect(actual).toBeTruthy();
 });
