@@ -1,13 +1,14 @@
 let webdriver = require('selenium-webdriver'),
-    {describe, after, before} = require('selenium-webdriver/testing'),
+    { after, before} = require('selenium-webdriver/testing'),
     By = webdriver.By,
     until = webdriver.until,
     element,
     element2,
+    element3,
     actual,
     expected,
     driver;
-let d = new webdriver.Builder().forBrowser('chrome').build();
+
 const waitUntilTime = 20000;
 const rootURL = 'https://library-app.firebaseapp.com/';
 
@@ -23,47 +24,73 @@ async function getElementById(id) {
     return await driver.wait(until.elementIsVisible(element), waitUntilTime);
 }
 
-async function getElementByXPath(xpath) {
-    const element = await driver.wait(until.elementLocated(By.xpath(xpath)), waitUntilTime);
+describe('Testy FireAppBase', () => {
 
-    return await driver.wait(until.elementIsVisible(element), waitUntilTime);
-}
+    beforeEach(async () => {
+        driver = new webdriver.Builder().forBrowser('chrome').build();
+        await driver.get(rootURL);
+    });
 
-it('Uruchom driver', () => {
-    return d.then(_d => {
-        driver = _d
-    })
+    afterEach(async () => {
+        await driver.quit();
+    });
+
+
+    test('Jeśli mail jest wpisany nie poprawnie nie wysyłaj formularza', async () => {
+
+        //element2 to guzik
+        element2 = await getElementByClassName('btn-lg');
+        // element to input
+        element = await getElementById('ember14');
+        await element.sendKeys('userail.pl');
+
+        actual = await element2.isEnabled();
+
+        expect(actual).toBeFalsy();
+    });
+
+    test('Jeśli mail jest wpisany poprawnie wyślij formularz i sprawdź czy api zwróciło alert-success', async () => {
+        //element2 to guzik
+        element2 = await getElementByClassName('btn-lg');
+        // element to input
+        element = await getElementById('ember14');
+        await element.sendKeys('user@mail.pl');
+        element2.click();
+        // element3 to alert
+        element3 = await getElementByClassName('alert-success');
+        actual = await element3.isDisplayed();
+        expect(actual).toBeTruthy();
+    });
+
+
+    test('Pobierz tekst z alert-success i sprawdź czy zwraca on komunikat "Thank you! We saved your email address with the following id:"', async () => {
+        //element2 to guzik
+        element2 = await getElementByClassName('btn-lg');
+        // element to input
+        element = await getElementById('ember14');
+        await element.sendKeys('user@mail.pl');
+        element2.click();
+        // element3 to alert
+        element3 = await getElementByClassName('alert-success');
+        actual = await element3.getText().then((text) => {
+            return text;
+        });
+        expect(actual).toMatch(/Thank you! We saved your email address with the following id:/);
+    });
+
 });
 
-it('Zainicjalizuj kontekst strony', async () => {
-    await driver.get(rootURL);
-});
-
-it('Sprawdzamy czy mail jest poprawny', async () => {
-
-    //element2 to guzik
-    element2 = await getElementByClassName('btn-lg');
-    // element to input
-    element = await getElementById('ember14');
-    await element.sendKeys('user@ail.pl');
-
-    // driver.sleep(3000);
-    actual = await element2.isEnabled();
-
-    expect(actual).toBeTruthy();
-});
-
-// //pobieram wszystkie elementy navbara do poruszania się po aplikacji.
-// driver.findElements(By.css('nav li')).then((elements) => {
-//     elements.map((element) => {
-//         element.getText().then((txt) => {
-//             console.log("Pobrano element z navbara " + txt);
-//         });
-//     });
-// }).catch(() => {
-//     console.log("Nie udało się pobrać elementów navbara")
+// it('Uruchom driver', () => {
+//     return d.then(_d => {
+//         driver = _d
+//     })
 // });
 //
+// it('Zainicjalizuj kontekst strony', async () => {
+//     await driver.get(rootURL);
+// });
+
+
 // //szukamy naszego inputa
 // driver.findElement(By.css('#ember14'))
 //     .sendKeys('user@testwsei.pl')

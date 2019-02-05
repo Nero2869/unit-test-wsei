@@ -10,12 +10,7 @@ test('testy inicjalizacji obiektu', () => {
 });
 
 test('sprawdzenie czy stworzony obiekt jest klasy User', () => {
-    expect(new User('Adam', 'Nowak', 18, 'user')).toEqual({
-        firstName: 'Jan',
-        secondName: 'Kowalski',
-        age: 18,
-        aclType: 'user'
-    });
+    expect(new User('Adam', 'Nowak', 18, 'user')).toBeInstanceOf(User)
 });
 
 test('czy dziala isAdult', () => {
